@@ -11,21 +11,7 @@ package_root_directory = file.parents [1]
 sys.path.append(str(package_root_directory))  
 
 import numpy as np
-import re
-import sklearn.pipeline
-
 from copy import deepcopy
-
-from abc import abstractmethod
-from scipy.ndimage.filters import gaussian_filter
-from skimage.feature import hog
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA, TruncatedSVD
-from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-from sklearn.impute import MissingIndicator
-from sklearn.pipeline import FeatureUnion
-from sklearn.preprocessing import StandardScaler, FunctionTransformer
-from typing import Dict, Iterable, Type, Optional
 
 from datascope.importance.common import SklearnModelUtility, binarize, get_indices
 from datascope.importance.shapley import ShapleyImportance, ImportanceMethod
