@@ -65,6 +65,7 @@ for i in ordered_examples:
 	print(score)
 
 	# fix a label
+	print("fix example ", i, "by flipping label from", y_train_dirty[i], "to", y_train[i])
 	y_train_dirty[i] = y_train[i]
 
 
