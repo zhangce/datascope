@@ -33,7 +33,8 @@ from sklearn.model_selection import train_test_split
 
 from sklearn.linear_model import LogisticRegression
 
-
+# Load and split data
+#
 iris = datasets.load_iris()
 X = iris.data[:, :2]  
 y = iris.target
@@ -41,20 +42,29 @@ y = iris.target
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 
 # Inject noise
+#
 X_train_dirty = deepcopy(X_train)
 y_train_dirty = deepcopy(y_train)
 y_train_dirty = 2 - y_train_dirty
 
+# Setup target model, utility function
+#
 model = get_model(ModelType.LogisticRegression)
 utility = SklearnModelUtility(model, accuracy_score)
 
+# Compute Importance
+#
 method = ImportanceMethod.NEIGHBOR
 importance = ShapleyImportance(method=method, utility=utility)
+
 importances = importance.fit(X_train_dirty, y_train_dirty).score(X_test, y_test)
 
-
+# Order data examples by their importances
+#
 ordered_examples = np.argsort(importances)
 
+# Fix one by one
+#
 for i in ordered_examples:
 
 	# current model
