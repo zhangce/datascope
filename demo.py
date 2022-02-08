@@ -1,3 +1,9 @@
+
+### TO RUN THIS MINIMAL DEMO ###
+# pip3 install -r requirements.txt
+# python3 setup.py install
+# python3 demo.py
+
 import sys  
 from pathlib import Path  
 file = Path(__file__). resolve()  
