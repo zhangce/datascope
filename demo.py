@@ -80,11 +80,11 @@ for i in range(ordered_examples.shape[0]):
 	print("current model accuracy: DataScope score", shapley_score, "     Random score", random_score)
 
 	# fix a label, following shapley
-	print("DataScope: fix example", i, "by flipping label from", y_train_shapley[i], "to", y_train[i])
+	print(1.0*i/ordered_examples.shape[0], "DataScope: fix example", i, "by flipping label from", y_train_shapley[i], "to", y_train[i])
 	y_train_shapley[ordered_examples[i]] = y_train[ordered_examples[i]]
 
 	# fix a label, following shapley
-	print("Random: fix example", i, "by flipping label from", y_train_random[i], "to", y_train[i])
+	print(1.0*i/ordered_examples.shape[0], "Random: fix example", i, "by flipping label from", y_train_random[i], "to", y_train[i])
 	y_train_random[ordered_examples_random[i]] = y_train[ordered_examples_random[i]]
 
 
