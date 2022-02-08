@@ -55,6 +55,8 @@ importances = importance.fit(X_train_dirty, y_train_dirty).score(X_test, y_test)
 #
 ordered_examples = np.argsort(importances)
 
+print("DataScope recommend to fix examples in the following order:", ordered_examples)
+
 # Fix one by one
 #
 for i in ordered_examples:
@@ -62,11 +64,13 @@ for i in ordered_examples:
 	# current model
 	clf = LogisticRegression(random_state=0).fit(X_train_dirty, y_train_dirty)
 	score = clf.score(X_test, y_test)
-	print(score)
+	print("")
+	print("current model accuracy", score)
 
 	# fix a label
-	print("fix example ", i, "by flipping label from", y_train_dirty[i], "to", y_train[i])
+	print("fix example", i, "by flipping label from", y_train_dirty[i], "to", y_train[i])
 	y_train_dirty[i] = y_train[i]
+
 
 
 
