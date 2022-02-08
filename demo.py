@@ -57,20 +57,35 @@ ordered_examples = np.argsort(importances)
 
 print("DataScope recommend to fix examples in the following order:", ordered_examples)
 
+import numpy.random as random
+ordered_examples_random = np.argsort(random.random(importances.shape[0]))
+
+print("Random recommend to fix examples in the following order:", ordered_examples_random)
+
+y_train_random = deepcopy(y_train_dirty)
+y_train_shapley = deepcopy(y_train_dirty)
+
 # Fix one by one
 #
-for i in ordered_examples:
+for i in range(ordered_examples.shape[0]):
 
-	# current model
-	clf = LogisticRegression(random_state=0).fit(X_train_dirty, y_train_dirty)
-	score = clf.score(X_test, y_test)
+	# current Shapley model 
+	clf = LogisticRegression(random_state=0).fit(X_train_dirty, y_train_shapley)
+	shapley_score = clf.score(X_test, y_test)
+
+	clf = LogisticRegression(random_state=0).fit(X_train_dirty, y_train_random)
+	random_score = clf.score(X_test, y_test)
+
 	print("")
-	print("current model accuracy", score)
+	print("current model accuracy: DataScope score", shapley_score, "     Random score", random_score)
 
-	# fix a label
-	print("fix example", i, "by flipping label from", y_train_dirty[i], "to", y_train[i])
-	y_train_dirty[i] = y_train[i]
+	# fix a label, following shapley
+	print("DataScope: fix example", i, "by flipping label from", y_train_shapley[i], "to", y_train[i])
+	y_train_shapley[ordered_examples[i]] = y_train[ordered_examples[i]]
 
+	# fix a label, following shapley
+	print("Random: fix example", i, "by flipping label from", y_train_random[i], "to", y_train[i])
+	y_train_random[ordered_examples_random[i]] = y_train[ordered_examples_random[i]]
 
 
 
