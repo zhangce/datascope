@@ -497,7 +497,7 @@ class ShapleyImportance(Importance):
         # Apply the feature extraction pipeline if it was provided.
         if self.pipeline is not None:
             X = self.pipeline.fit_transform(X, y=y)
-            X_test = self.pipeline.transform(X_test)
+            X_test = self.pipeline[:-1].transform(X_test)
 
         # Compute the distances between training and text data examples.
         if issparse(X):
