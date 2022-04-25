@@ -1,3 +1,38 @@
-from .base import DatasetId, DatasetModality, Dataset, UCI, FashionMNIST, TwentyNewsGroups
+from .base import (
+    DatasetId,
+    DatasetModality,
+    Dataset,
+    BiasMethod,
+    BiasedMixin,
+    RandomDataset,
+    UCI,
+    FashionMNIST,
+    TwentyNewsGroups,
+    DEFAULT_TRAINSIZE,
+    DEFAULT_VALSIZE,
+    DEFAULT_TESTSIZE,
+    DEFAULT_NUMFEATURES,
+    DEFAULT_BIAS_METHOD,
+    KEYWORD_REPLACEMENTS,
+    preload_datasets,
+)
 
-__all__ = ["DatasetId", "DatasetModality", "Dataset", "UCI", "FashionMNIST", "TwentyNewsGroups", "load_dataset"]
+__all__ = [
+    "DatasetId",
+    "DatasetModality",
+    "Dataset",
+    "BiasMethod",
+    "BiasedMixin",
+    "RandomDataset",
+    "UCI",
+    "FashionMNIST",
+    "TwentyNewsGroups",
+    "load_dataset",
+    "DEFAULT_TRAINSIZE",
+    "DEFAULT_VALSIZE",
+    "DEFAULT_TESTSIZE",
+    "DEFAULT_NUMFEATURES",
+    "DEFAULT_BIAS_METHOD",
+    "KEYWORD_REPLACEMENTS",
+    "preload_datasets",
+]

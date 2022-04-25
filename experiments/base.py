@@ -1,13 +1,18 @@
 import os
-from typing import Any, Optional
 
-from .scenarios import Study, Scenario, DEFAULT_OUTPUT_PATH
+from experiments.scenarios.base import Report
+from tqdm import tqdm
+from typing import Any, Optional, Sequence
+
+from .scenarios import Study, Scenario, DEFAULT_RESULTS_PATH, DEFAULT_STUDY_PATH
 
 
 def run(
-    output_path: str = DEFAULT_OUTPUT_PATH,
+    output_path: str = DEFAULT_RESULTS_PATH,
     no_parallelism: bool = False,
+    no_save: bool = False,
     ray_address: Optional[str] = None,
+    ray_numprocs: Optional[int] = None,
     **attributes: Any
 ) -> None:
     # print("run", output_path, attributes)
@@ -30,18 +35,54 @@ def run(
                 logstream=study._logstream,
             )
 
+    # Construct a study from a set of scenarios.
+    scenarios = list(Scenario.get_instances(**attributes))
+    if study is not None:
+        existing_scenarios = list(study.scenarios)
+        for cs in scenarios:
+            if all(not s.is_match(cs) for s in study.scenarios):
+                existing_scenarios.append(cs)
+        scenarios = existing_scenarios
+        study = Study(
+            scenarios=scenarios,
+            id=study.id,
+            outpath=path,
+            scenario_path_format=study.scenario_path_format,
+            logstream=study._logstream,
+        )
     else:
-
-        # Construct a study from a set of scenarios.
-        scenarios = list(Scenario.get_instances(**attributes))
         study = Study(scenarios=scenarios, outpath=output_path)
 
+    # Eagerly save the study with all unfinished scenarios.
+    if not no_save:
+        study.save()
+
     # Run the study.
-    study.run(parallel=not no_parallelism, ray_address=ray_address, eagersave=True)
+    study.run(parallel=not no_parallelism, ray_address=ray_address, ray_numprocs=ray_numprocs, eagersave=not no_save)
 
     # Save the study.
-    study.save()
+    if not no_save:
+        study.save()
 
 
-def finalize() -> None:
-    pass
+def report(
+    study_path: Optional[str] = DEFAULT_STUDY_PATH,
+    groupby: Optional[Sequence[str]] = None,
+    output_path: Optional[str] = None,
+    saveonly: Optional[Sequence[str]] = None,
+    use_subdirs: bool = False,
+    **attributes: Any
+) -> None:
+
+    if study_path is None:
+        raise ValueError("The provided study path cannot be None.")
+
+    # Load the study.
+    study = Study.load(study_path)
+
+    # Get applicable instances of reports.
+    reports = list(Report.get_instances(study=study, groupby=groupby, **attributes))
+
+    for r in tqdm(reports, desc="Reports"):
+        r.generate()
+        r.save(path=output_path, use_subdirs=use_subdirs, saveonly=saveonly)
